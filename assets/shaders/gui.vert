@@ -1,0 +1,2 @@
+#version 460 core
+layout(location=0)in vec2 aPos;layout(location=1)in vec2 aTexCoord;layout(location=2)in vec4 aColor;layout(std140, binding = 12)uniform Projection{mat4 proj;};uniform mat4 model;out vec2 TexCoord;out vec4 Color;void main(){gl_Position=proj*model*vec4(aPos,0,1);TexCoord=vec2(aTexCoord.x,1.-aTexCoord.y);Color=aColor;}

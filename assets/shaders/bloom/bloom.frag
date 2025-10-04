@@ -1,0 +1,2 @@
+#version 420
+out vec4 FragColor;in vec2 TexCoords;layout(binding=0)uniform sampler2D scene;layout(binding=1)uniform sampler2D bloomBlur;layout(binding=2)uniform sampler2D reflections;uniform float exposure,bloomStrength=.02f;uniform bool enabled;void main(){vec3 b=(enabled?mix(texture(scene,TexCoords).xyz+texture(reflections,TexCoords).xyz,texture(bloomBlur,TexCoords).xyz,bloomStrength):texture(scene,TexCoords).xyz)*exposure;FragColor=vec4(pow(clamp(b*(2.51f*b+.03f)/(b*(2.43f*b+.59f)+.14f),vec3(0),vec3(1)),vec3(1./2.2)),1);}

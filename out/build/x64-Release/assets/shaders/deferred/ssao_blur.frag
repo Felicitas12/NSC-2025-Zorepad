@@ -1,0 +1,2 @@
+#version 430
+out float FragColor;in vec2 TexCoords;layout(binding=0)uniform sampler2D gSsao;void main(){vec2 f=1./vec2(textureSize(gSsao,0));float v=0.;for(int g=-2;g<2;g++)for(int i=-2;i<2;i++){vec2 F=vec2(float(g),float(i))*f;v+=texture(gSsao,TexCoords+F).x;}FragColor=v/(float(4)*float(4));}

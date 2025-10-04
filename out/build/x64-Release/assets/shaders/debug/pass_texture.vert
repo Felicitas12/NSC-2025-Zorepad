@@ -1,0 +1,2 @@
+#version 420
+layout(location=0)in vec3 aPos;layout(location=1)in vec2 aTexCoords;uniform vec3 billboardPos;layout(std140, binding = 6)uniform Matrices{mat4 projection;mat4 view;};out vec2 TexCoord;void main(){vec3 v=normalize(vec3(view[0][0],view[1][0],view[2][0]));gl_Position=projection*view*vec4(billboardPos+aPos.x*vec2(.5).x*v+aPos.y*vec2(.5).y*vec3(0,1,0),1);TexCoord=aTexCoords;}

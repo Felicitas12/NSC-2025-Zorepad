@@ -1,0 +1,2 @@
+#version 420 core
+layout(location=0)in vec3 aPos;out vec3 WorldPos;layout(std140, binding = 6)uniform Matrices{mat4 projection;mat4 view;};void main(){WorldPos=aPos;mat4 v=mat4(mat3(view));vec4 a=projection*v*vec4(WorldPos,1);gl_Position=a.xyww;}

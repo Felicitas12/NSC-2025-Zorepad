@@ -1,0 +1,2 @@
+#version 420
+layout(location=0)in vec2 vertex;out vec2 TexCoords;flat out int index;uniform mat4 transforms[255];layout(std140, binding = 12)uniform Projection{mat4 proj;};void main(){gl_Position=proj*transforms[gl_InstanceID]*vec4(vertex.xy,0,1);index=gl_InstanceID;TexCoords=vertex.xy;TexCoords.y=1.f-TexCoords.y;}

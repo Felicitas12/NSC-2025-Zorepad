@@ -1,0 +1,2 @@
+#version 450 core
+layout(quads,fractional_odd_spacing,cw)in;layout(binding=0)uniform sampler2D heightMap;uniform mat4 lightSpaceMatrix,model;in vec2 TexCoord_TE[];void main(){float m=gl_TessCoord.x,T=gl_TessCoord.y;vec4 n=gl_in[0].gl_Position,g=gl_in[1].gl_Position,x=gl_in[2].gl_Position,c=gl_in[3].gl_Position;n=mix(mix(n,g,m),mix(x,c,m),T);n.y+=texture(heightMap,mix(mix(TexCoord_TE[0],TexCoord_TE[1],m),mix(TexCoord_TE[2],TexCoord_TE[3],m),T)).x*150.;gl_Position=lightSpaceMatrix*model*n;}

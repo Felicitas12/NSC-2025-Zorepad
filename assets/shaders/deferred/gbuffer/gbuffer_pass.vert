@@ -1,0 +1,2 @@
+#version 430
+layout(location=0)in vec3 aPos;layout(location=1)in vec3 aNormal;layout(location=2)in vec2 aTexCoords;layout(location=3)in vec3 aTangent;out vec2 TexCoords;out mat3 TangentToWorldMatrix;uniform mat4 model;layout(std140, binding = 6)uniform Matrices{mat4 projection;mat4 view;};void main(){TexCoords=aTexCoords;mat3 m=transpose(inverse(mat3(model)));vec3 l=normalize(m*aTangent),n=normalize(m*aNormal);l=normalize(l-dot(l,n)*n);vec3 v=cross(n,l);TangentToWorldMatrix=mat3(l,v,n);gl_Position=projection*view*(model*vec4(aPos,1));}

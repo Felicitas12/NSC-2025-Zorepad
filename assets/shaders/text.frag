@@ -1,0 +1,2 @@
+#version 420
+out vec4 color;in vec2 TexCoords;flat in int index;layout(binding=0)uniform sampler2DArray text;uniform int letterMap[255];uniform vec3 textColor;void main(){color=vec4(textColor,1)*vec4(1,1,1,texture(text,vec3(TexCoords.xy,letterMap[index])));}

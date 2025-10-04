@@ -1,0 +1,2 @@
+#version 420
+out vec4 FragColor;in vec3 WorldPos;layout(binding=0)uniform samplerCube environmentMap;void main(){vec3 s=normalize(WorldPos),c=vec3(0),f=vec3(0,1,0),a=normalize(cross(f,s));f=normalize(cross(s,a));float v=0.f;for(float F=0.;F<2.*acos(-1.);F+=.025)for(float W=0.;W<.5*acos(-1.);W+=.025){vec3 n=vec3(sin(W)*cos(F),sin(W)*sin(F),cos(W));n=n.x*a+n.y*f+n.z*s;c+=texture(environmentMap,n).xyz*cos(W)*sin(W);v++;}c=acos(-1.)*c*(1./float(v));FragColor=vec4(c,1);}

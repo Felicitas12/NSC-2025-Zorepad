@@ -1,0 +1,2 @@
+#version 420
+out vec4 FragColor;in vec3 WorldPos;layout(binding=0)uniform sampler2D equirectangularMap;vec2 e(){vec3 e=normalize(WorldPos);return vec2(atan(e.z,e.x),asin(e.y))*vec2(.1591,.3183)+.5;}void main(){FragColor=vec4(texture(equirectangularMap,e()).xyz,1);}
