@@ -45,10 +45,12 @@ int main() {
 
     // ISS creation
     Entity* iss = new Entity("ISS", "assets/objects/SpaceItems/ISS_stationary.glb");
-    iss->set_scale(glm::vec3(ISS_SIZE));
+	iss->set_scale(glm::vec3(ISS_SIZE));
     iss->set_position(glm::vec3(-700.0F, 0.0F, -700.0F));
     iss->set_rotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(90.0f));
     auto issUUID = UUID();
+    iss->make_collision(issUUID, "assets/objects/SpaceItems/ISS_stationary.glb", false);
+
     Scene::createEntityWithUUID(issUUID, iss);
 
     // Earth Creation
