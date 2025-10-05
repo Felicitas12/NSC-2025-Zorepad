@@ -72,44 +72,6 @@ void SpacePlayerController::ProcessKeyboard(Camera_Movement_State direction, dou
 	}*/
 	const float velocity = MovementSpeed * 10 * deltaTime;
 
-
-	if (direction == Camera_Movement_State::FORWARD)
-	{
-		direction_velocity += btVector3(newfront.x, 0.0f, newfront.z) * velocity;
-	}
-
-	if (direction == Camera_Movement_State::BACKWARD)
-	{
-		direction_velocity += btVector3(-newfront.x, 0.0f, -newfront.z) * velocity;
-	}
-
-	if (direction == Camera_Movement_State::LEFT)
-	{
-		direction_velocity += btVector3(-Right.x, 0.0f, -Right.z) * velocity;
-	}
-
-	if (direction == Camera_Movement_State::RIGHT)
-	{
-		direction_velocity += btVector3(Right.x, 0.0f, Right.z) * velocity;
-	}
-	if (direction == Camera_Movement_State::LEFT_SHIFT && on_ground)
-	{
-		leftshift_pressed = true;
-	}
-	else
-	{
-		leftshift_pressed = false;
-	}
-	if (direction == Camera_Movement_State::LEFT_CTRL)
-	{
-		leftctrl_pressed = true;
-	}
-	else
-	{
-		leftctrl_pressed = false;
-	}
-
-
 	if (direction == Camera_Movement_State::JUMP && on_ground)
 		playerRigidBody->applyCentralImpulse(btVector3(0.0f, 250.0F, 0.0f));
 

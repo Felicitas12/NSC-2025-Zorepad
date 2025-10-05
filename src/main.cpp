@@ -48,12 +48,9 @@ int main() {
 
     // ISS creation
     Entity* iss = new Entity("ISS", "assets/objects/SpaceItems/ISS_stationary.glb");
-	iss->set_scale(glm::vec3(ISS_SIZE));
-    iss->set_position(glm::vec3(-700.0F, 0.0F, -700.0F));
-    iss->set_rotation(glm::vec3(axisY), glm::radians(180.0f));
-    //iss->set_rotation()
+    iss->set_scale(glm::vec3(ISS_SIZE));
     auto issUUID = UUID();
-    //iss->make_collision(issUUID, "assets/objects/SpaceItems/ISS_stationary.glb", false);
+    iss->make_collision(issUUID, "assets/objects/SpaceItems/ISS_stationary.glb", false);
 
     Scene::createEntityWithUUID(issUUID, iss);
 
@@ -66,13 +63,13 @@ int main() {
 	Scene::createEntityWithUUID(earthUUID, earth);
    
     // Cupula Creation
-    Entity* cupola = new Entity("Cupola", "assets/objects/SpaceItems/kupola.glb");
-    auto cupolaUUID = UUID();
-    cupola->set_scale(glm::vec3(3.0F));
-    cupola->set_position(glm::vec3(500.0F, 0.0F, 500.0F));
-    //earth.set_rotation(earthAxisTilted, glm::radians(360.0f));
-    Scene::createEntityWithUUID(cupolaUUID, cupola);
+    Entity* cupola = new Entity("cupola", "assets/objects/SpaceItems/kupola_2.glb");
+    cupola->set_scale(glm::vec3(ISS_SIZE));
+    auto сupolaUUID = UUID();
+    //iss->make_collision(issUUID, "assets/objects/SpaceItems/ISS_stationary.glb", false);
 
+    Scene::createEntityWithUUID(сupolaUUID, cupola);
+    
 
     // Time variables
     double elapsedTime = 0.0;
@@ -80,7 +77,10 @@ int main() {
     float earthRotationAngle = 0.0f;
     float earthOrbitAngle = 0.0f;
     float issOrbitAngle = 0.0f;
+	float cameraOrbitAngle = 0.0f;
+	float cupolaOrbitAngle = 0.0f;
 
+    Render::getLightSources().add_point_light(glm::vec3(0), glm::vec3{ 6.0f });
     while (!Window::ShouldClose())
     {
         Input::TickTimer();
@@ -106,29 +106,68 @@ int main() {
         );
         earth->set_position(earthPosition);
 
-        // Incremental ISS orbit around the Earth
-        issOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
-        glm::vec3 issLocalPosition = glm::vec3(
-            ISS_ALTITUDE * glm::cos(issOrbitAngle),
-            ISS_ALTITUDE * glm::sin(issOrbitAngle), // Assuming the orbit is in the XZ plane
+        // ISS orbit around the Earth
+        //issOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
+        //glm::vec3 issLocalPosition = glm::vec3(
+        //    ISS_ALTITUDE_FROM_EARTH * glm::cos(issOrbitAngle),
+        //    ISS_ALTITUDE_FROM_EARTH * glm::sin(issOrbitAngle), // Assuming the orbit is in the XZ plane
+        //    0.0f
+        //);
+        //glm::vec3 issWorldPosition = earth->get_pos() + issLocalPosition;
+        //iss->set_position(issWorldPosition);
+
+        // Cupola orbit around the Earth
+        cupolaOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
+        glm::vec3 cupolaLocalPosition = glm::vec3(
+            ISS_ALTITUDE_FROM_EARTH * glm::cos(cupolaOrbitAngle),
+            ISS_ALTITUDE_FROM_EARTH * glm::sin(cupolaOrbitAngle), // Assuming the orbit is in the XZ plane
             0.0f
         );
-        glm::vec3 issWorldPosition = earth->get_pos() + issLocalPosition;
-        iss->set_position(issWorldPosition);
+        glm::vec3 cupolaWorldPosition = earth->get_pos() + cupolaLocalPosition;
+        cupola->set_position(cupolaWorldPosition);
 
-        // Calculate the direction vector from ISS to Earth
-        glm::vec3 directionToEarth = glm::normalize(earth->get_pos() - issWorldPosition);
+		// Calculation of camera position in cupola around the Earth
+        cameraOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
+        glm::vec3 cameraLocalPosition = glm::vec3(
+            CAMERA_ATTIDUE_TO_CUPOLA * glm::cos(cameraOrbitAngle),
+            CAMERA_ATTIDUE_TO_CUPOLA * glm::sin(cameraOrbitAngle), // Assuming the orbit is in the XZ plane
+            0.0f
+        );
+        glm::vec3 cameraWorldPosition = earth->get_pos() + cameraLocalPosition;
 
-        // Calculate the rotation to align the ISS's forward vector with the directionToEarth
-        glm::quat lookQuat = glm::rotation(glm::vec3(0, -1, 0), directionToEarth);
+		// Define directionToEarth before using it
+		glm::vec3 directionToEarth = glm::vec3(0.0f); // Default initialization
 
-        // Set the ISS's rotation
-        iss->set_rotation(lookQuat);
+		// Set ISS rotation to always face the Earth
+        if (cupolaOrbitAngle != 0) {
+            directionToEarth = glm::normalize(earth->get_pos() - cupolaWorldPosition);
+            glm::quat lookQuat = glm::rotation(glm::vec3(0, 1, 0), directionToEarth);
+            cupola->set_rotation(lookQuat);
+        }
+        
+        
 
         // Update lighting
-        Render::getLightSources().set_directional_light(0, glm::normalize(earthPosition), glm::vec3{ 6.0f });
+        Render::getLightSources().set_directional_light(0, glm::normalize(cameraWorldPosition), glm::vec3{ 6.0f });
+        Render::getLightSources().set_point_light(0, iss->get_pos(), glm::vec3{6.0f});
         Render::getLightSources().send_changes();
         // Engine tick and buffer swap
+
+        // Camera logic
+        glm::vec3 cupolaPosition = cupola->get_pos();
+        glm::quat cupolaRotation = cupola->get_rot();
+        // When will be opened edit
+		//Scene::GetCamera()->Rotation = cupolaRotation;
+        auto cameraBody = Scene::GetCamera()->GetPhysicsBody();
+        btVector3 newCameraPos(cameraWorldPosition.x, cameraWorldPosition.y, cameraWorldPosition.z); // нужная позиция
+
+        btTransform transform;
+		cameraBody->getMotionState()->getWorldTransform(transform); // getting current transform
+        transform.setOrigin(newCameraPos);
+
+        cameraBody->setWorldTransform(transform);
+        cameraBody->getMotionState()->setWorldTransform(transform);
+
         Engine::Tick();
         Window::SwapBuffers();
     }
