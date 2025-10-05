@@ -22,26 +22,35 @@ public:
 		overlay->style.backgroundTexture = "mainmenu_background";
 
 
-		auto titleLabel = std::make_shared<Label>(180, 720, 190, 74, "Menu");
-		titleLabel->style.textColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-		titleLabel->style.alignment = Label::Style::CENTER;
 
-		auto closeButton = std::make_shared<TexturedButton>(180, 620, 190, 74, "");
-		closeButton->setOnClick([this]() {
+		float screenWidth = 1920.0f;
+		float screenHeight = 1080.0f;
+
+		float buttonWidth = 380.0f;
+		float buttonHeight = 150.0f;
+
+		// Центр по X
+		float buttonX = (screenWidth - buttonWidth) / 2.0f;
+
+		// На 15% от нижнего края
+		float buttonY = screenHeight * 0.15f; // примерно 162 пикселя от низа
+
+		auto startButton = std::make_shared<TexturedButton>(buttonX, buttonY, buttonWidth, buttonHeight, "");
+		startButton->setOnClick([this]() {
 			if (screenManager) {
 				screenManager->popScreen();
+				screenManager->pushScreen("warning");
 			}
 			});
 
-		closeButton->style.normalTexture = "mainmenu_button";
-		closeButton->style.hoverTexture = "mainmenu_button_hover";
+		startButton->style.normalTexture = "mainmenu_button";
+		startButton->style.hoverTexture = "mainmenu_button_hover";
 
-		addElement(titleLabel);
 		addElement(overlay);
-		addElement(closeButton);
+		addElement(startButton);
 
 
-		blockInput = true; // Ѕлокируем ввод дл¤ экранов ниже
+		blockInput = true;
 	}
 	bool handleKeyboard(int key, bool pressed) override {
 
