@@ -39,6 +39,7 @@ int main() {
 	Entity* sun = new Entity("Sun", "assets/objects/SpaceItems/sun.glb");
     sun->set_scale(glm::vec3(SUN_SIZE));
 	sun->set_position(sunPosition);
+    sun->set_draw_shadow(true);
     auto sunUUID = UUID();
     Scene::createEntityWithUUID(sunUUID, sun);
 
@@ -106,10 +107,13 @@ int main() {
         );
         iss->set_position(earth->get_pos() + issLocalPosition);
         /*earth.set_rotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(1.0f));*/
-        // Render::getLightSources().set_directional_light(0, glm::normalize(-earth_pos), glm::vec3{ 6.0f });
-		// take the existing light and change its direction
 
-		// Render::getLightSources().send_changes(); all changes with lighting to shaders
+
+        Render::getLightSources().set_directional_light(0, glm::normalize(earthPosition), glm::vec3{ 6.0f });
+		// take the existing light and change its direction
+		Render::getLightSources().send_changes();  //all changes with lighting to shaders
+
+
         Engine::Tick();
 		Window::SwapBuffers();
     }

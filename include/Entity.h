@@ -87,6 +87,7 @@ public:
 
     ENGINE_API glm::mat4 getModelMatrix();
 
+    ENGINE_API void set_draw_shadow(bool enable);
 
 };
 #endif
