@@ -140,7 +140,7 @@ int main() {
         //glm::vec3 issWorldPosition = earth->get_pos() + issLocalPosition;
         //iss->set_position(issWorldPosition);
 
-        // Cupola orbit around the Earth
+        // Cupola orbit around the Earth --------------------------------------------------- Uncomment/Comments to see Cupola
         cupolaOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
         glm::vec3 cupolaLocalPosition = glm::vec3(
             ISS_ALTITUDE_FROM_EARTH * glm::cos(cupolaOrbitAngle),
@@ -150,7 +150,7 @@ int main() {
         glm::vec3 cupolaWorldPosition = earth->get_pos() + cupolaLocalPosition;
         cupola->set_position(cupolaWorldPosition);
 
-		// Calculation of camera position in cupola around the Earth --------------------------------------------------- Uncomment/Comments to see Cupola
+		// Calculation of camera position in cupola around the Earth 
         cameraOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
         glm::vec3 cameraLocalPosition = glm::vec3(
             CAMERA_ATTIDUE_TO_CUPOLA * glm::cos(cameraOrbitAngle),
@@ -167,6 +167,19 @@ int main() {
             directionToEarth = glm::normalize(earth->get_pos() - cupolaWorldPosition);
             glm::quat lookQuat = glm::rotation(glm::vec3(axisY), directionToEarth);
             cupola->set_rotation(lookQuat);
+
+            // Camera logic
+            glm::quat cupolaRotation = cupola->get_rot();
+            glm::quat mouseRotation = Scene::GetCamera()->getRotation();
+
+            // Define the offset to align the camera with the cupola's window
+            glm::quat windowOffset = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Adjust as needed
+            glm::quat windowOffset2 = glm::angleAxis(glm::radians(120.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Adjust as needed
+            // Combine the cupola's rotation with the offset
+            glm::quat finalCameraRotation = cupolaRotation * windowOffset * windowOffset2;
+
+            // Set the camera's rotation
+            Scene::GetCamera()->SetRotation(finalCameraRotation); // Uncoment to make a camera movable
         }
         else if (issOrbitAngle != 0) {
             directionToEarth = glm::normalize(earth->get_pos() - issWorldPosition);
@@ -179,19 +192,6 @@ int main() {
         Render::getLightSources().set_point_light(0, iss->get_pos(), glm::vec3{6.0f});
         Render::getLightSources().send_changes();
         // Engine tick and buffer swap
-
-        // Camera logic
-        glm::vec3 cupolaPosition = cupola->get_pos();
-        glm::quat cupolaRotation = cupola->get_rot();
-
-        // Define the offset to align the camera with the cupola's window
-        glm::quat windowOffset = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Adjust as needed
-        glm::quat windowOffset2 = glm::angleAxis(glm::radians(120.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Adjust as needed
-        // Combine the cupola's rotation with the offset
-        glm::quat finalCameraRotation = cupolaRotation * windowOffset * windowOffset2;
-
-        // Set the camera's rotation
-		Scene::GetCamera()->SetRotation(finalCameraRotation); // Uncoment to make a camera movable
 
         auto cameraBody = Scene::GetCamera()->GetPhysicsBody();
         btVector3 newCameraPos(cameraWorldPosition.x, cameraWorldPosition.y, cameraWorldPosition.z); // нужная позиция
