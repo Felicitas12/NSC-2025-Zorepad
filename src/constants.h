@@ -21,8 +21,8 @@ const double CAMERA_ATTIDUE_TO_CUPOLA = ISS_ALTITUDE_FROM_EARTH - 1;
 const double ISS_ORBIT_PERIOD = 92.68*2;   // 92.68 minutes in seconds
 
 // Sizes for rendering
-const float SUN_SIZE = 30.0F;
-const float EARTH_SIZE = 0.4F;
+const float SUN_SIZE = 25.0F;
+const float EARTH_SIZE = 0.39F;
 const float ISS_SIZE = 0.75F;
 const float CUPOLA_SIZE = 1.0F;
 

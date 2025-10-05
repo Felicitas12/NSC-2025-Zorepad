@@ -63,7 +63,7 @@ int main() {
 	Scene::createEntityWithUUID(earthUUID, earth);
    
     // Cupula Creation
-    Entity* cupola = new Entity("cupola", "assets/objects/SpaceItems/kupola_2.glb");
+    Entity* cupola = new Entity("cupola", "assets/objects/SpaceItems/kupola_3.glb");
     cupola->set_scale(glm::vec3(ISS_SIZE));
     auto сupolaUUID = UUID();
     //iss->make_collision(issUUID, "assets/objects/SpaceItems/ISS_stationary.glb", false);
@@ -80,12 +80,14 @@ int main() {
 	float cameraOrbitAngle = 0.0f;
 	float cupolaOrbitAngle = 0.0f;
 
+    glm::vec3 cupolaWorldPosition;
+    glm::vec3 issWorldPosition;
+
     Render::getLightSources().add_point_light(glm::vec3(0), glm::vec3{ 6.0f });
     while (!Window::ShouldClose())
     {
         Input::TickTimer();
         Input::Tick(Engine::GetRender(), Engine::GetGuiHandler(), Window::GetWindow());
-		std::cout << "Earht pos: " << earth->get_pos().x << " " << earth->get_pos().y << " " << earth->get_pos().z << "\n";
         // Get the time difference between frames
         float deltaTime = static_cast<float>(Input::GetDeltaTime());
 
@@ -106,7 +108,7 @@ int main() {
         );
         earth->set_position(earthPosition);
 
-        // ISS orbit around the Earth
+		// ISS orbit around the Earth --------------------------------------------------- Uncomment/Comments to see ISS
         //issOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
         //glm::vec3 issLocalPosition = glm::vec3(
         //    ISS_ALTITUDE_FROM_EARTH * glm::cos(issOrbitAngle),
@@ -126,7 +128,7 @@ int main() {
         glm::vec3 cupolaWorldPosition = earth->get_pos() + cupolaLocalPosition;
         cupola->set_position(cupolaWorldPosition);
 
-		// Calculation of camera position in cupola around the Earth
+		// Calculation of camera position in cupola around the Earth --------------------------------------------------- Uncomment/Comments to see Cupola
         cameraOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
         glm::vec3 cameraLocalPosition = glm::vec3(
             CAMERA_ATTIDUE_TO_CUPOLA * glm::cos(cameraOrbitAngle),
@@ -141,12 +143,15 @@ int main() {
 		// Set ISS rotation to always face the Earth
         if (cupolaOrbitAngle != 0) {
             directionToEarth = glm::normalize(earth->get_pos() - cupolaWorldPosition);
-            glm::quat lookQuat = glm::rotation(glm::vec3(0, 1, 0), directionToEarth);
+            glm::quat lookQuat = glm::rotation(glm::vec3(axisY), directionToEarth);
+            cupola->set_rotation(lookQuat);
+        }
+        else if (issOrbitAngle != 0) {
+            directionToEarth = glm::normalize(earth->get_pos() - issWorldPosition);
+            glm::quat lookQuat = glm::rotation(glm::vec3(axisY), directionToEarth);
             cupola->set_rotation(lookQuat);
         }
         
-        
-
         // Update lighting
         Render::getLightSources().set_directional_light(0, glm::normalize(cameraWorldPosition), glm::vec3{ 6.0f });
         Render::getLightSources().set_point_light(0, iss->get_pos(), glm::vec3{6.0f});
@@ -156,8 +161,16 @@ int main() {
         // Camera logic
         glm::vec3 cupolaPosition = cupola->get_pos();
         glm::quat cupolaRotation = cupola->get_rot();
-        // When will be opened edit
-		//Scene::GetCamera()->Rotation = cupolaRotation;
+
+        // Define the offset to align the camera with the cupola's window
+        glm::quat windowOffset = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Adjust as needed
+        glm::quat windowOffset2 = glm::angleAxis(glm::radians(120.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Adjust as needed
+        // Combine the cupola's rotation with the offset
+        glm::quat finalCameraRotation = cupolaRotation * windowOffset * windowOffset2;
+
+        // Set the camera's rotation
+		Scene::GetCamera()->SetRotation(finalCameraRotation); // Uncoment to make a camera movable
+
         auto cameraBody = Scene::GetCamera()->GetPhysicsBody();
         btVector3 newCameraPos(cameraWorldPosition.x, cameraWorldPosition.y, cameraWorldPosition.z); // нужная позиция
 
