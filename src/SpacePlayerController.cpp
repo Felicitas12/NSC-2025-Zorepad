@@ -246,9 +246,6 @@ void SpacePlayerController::ProcessMouseScroll(float yoffset)
 	SpectatorMovementSpeed += (float)yoffset * 4;
 	if (SpectatorMovementSpeed < 1.0f)
 		SpectatorMovementSpeed = 1.0f;
-	if (SpectatorMovementSpeed > 500.0f)
-		SpectatorMovementSpeed = 500.0f;
-
 }
 
 glm::vec3 SpacePlayerController::getPosition() const
