@@ -259,4 +259,10 @@ glm::vec3 SpacePlayerController::getPosition() const
 	const btVector3 origin = playerRigidBody->getWorldTransform().getOrigin();
 	return glm::vec3(origin.getX(), origin.getY(), origin.getZ());
 }
+glm::quat SpacePlayerController::getRotation() const {
+	return SpacePlayerController::Rotation;
+}
 
+void SpacePlayerController::SetRotation(glm::quat rotation) {
+	SpacePlayerController::Rotation = rotation;
+}

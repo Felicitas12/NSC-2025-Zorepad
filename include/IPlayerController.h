@@ -39,8 +39,10 @@ public:
     virtual void SetPhysicsBody(btRigidBody* rigid_body) = 0;
     virtual void SetSpectatorSpeed(float fov) = 0;
 
+    virtual void SetRotation(glm::quat rotation) = 0;
 
     virtual glm::vec3 getPosition() const = 0;
+    virtual glm::quat getRotation() const = 0;
     virtual glm::mat4 GetViewMatrix() = 0;
 
 

@@ -85,6 +85,9 @@ public:
 	void ProcessMouseScroll(float yoffset) override;
 
 	glm::vec3 getPosition() const override;
+	glm::quat getRotation() const override;
+
+	void SetRotation(glm::quat rotation) override;
 
 	glm::mat4 GetViewMatrix() override;
 
@@ -95,6 +98,7 @@ public:
 	float GetFov() const override { return Fov; }
 	btRigidBody* GetPhysicsBody() const override { return playerRigidBody; }
 	float& GetSpectatorSpeed() override { return SpectatorMovementSpeed; }
+
 
 private:
 	// calculates the front vector from the Camera's (updated) Euler Angles
