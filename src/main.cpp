@@ -16,6 +16,10 @@
 #include "SpacePlayerController.h"
 #include <glm/gtx/quaternion.hpp>
 
+#include "GUIHandler.h"
+#include "GUITextureManager.h"
+#include "screen/MainMenuScreen.h"
+
 int main() {
 
     auto custom_camera = std::make_unique<SpacePlayerController>(50.0f, 0.5f, 0.0f, 0.0f, 0.0f);
@@ -31,12 +35,30 @@ int main() {
     glm::vec3 sunPosition = glm::vec3(0.0F, 0.0F, 0.0F);
     Engine::Initialize();
 
+
 	/*SceneSerializer ss; // Loads scence from a file, but now is not existing
      ss.Deserialize("scene.yaml");*/
 
     Engine::GetRender().init_buffers(Window::GetWindowWidth(), Window::GetWindowHeight());
 
     Engine::InputInitialize();
+
+	// GUI setup ==================================
+
+    auto& texManager = Engine::GetGuiHandler().getTextureManager();
+
+
+    texManager.addTexture("mainmenu_background", Render::dsa_load_texture_iwh("assets/textures/ui/StartІcreen.jpg"));
+    texManager.addTexture("mainmenu_button", Render::dsa_load_texture_iwh("assets/textures/ui/StartButton.png"));
+    texManager.addTexture("mainmenu_button_hover", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonINMOn.png"));
+
+    auto main_menu = std::make_shared<MainMenuScreen>();
+    main_menu->setScreenManager(&Engine::GetGuiHandler().getScreenManager());
+
+    Engine::GetGuiHandler().getScreenManager().registerScreen("main", main_menu);
+    Engine::GetGuiHandler().getScreenManager().pushScreen("main");
+
+    // GUI setup ==================================
 
     // Sun creation
 	Entity* sun = new Entity("Sun", "assets/objects/SpaceItems/sun.glb");
