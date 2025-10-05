@@ -23,8 +23,9 @@ public:
 		auto indoor_button = std::make_shared<TexturedButton>(300, 150, 380, 150, "");
 		indoor_button->setOnClick([this]() {
 			if (screenManager) {
-
 				screenManager->popScreen();
+				Scene::GetCamera()->change_mode(true);
+
 			}
 			});
 		indoor_button->style.normalTexture = "indoor_button";
@@ -34,8 +35,9 @@ public:
 		auto outdoor_button = std::make_shared<TexturedButton>(1300, 150, 380, 150, "");
 		outdoor_button->setOnClick([this]() {
 			if (screenManager) {
-
 				screenManager->popScreen();
+				Scene::GetCamera()->change_mode(true);
+
 			}
 			});
 		outdoor_button->style.normalTexture = "outdoor_button";
