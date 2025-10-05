@@ -19,6 +19,7 @@
 #include "GUIHandler.h"
 #include "GUITextureManager.h"
 #include "screen/MainMenuScreen.h"
+#include "screen/WarningScreen.h"
 
 int main() {
 
@@ -51,11 +52,20 @@ int main() {
     texManager.addTexture("mainmenu_background", Render::dsa_load_texture_iwh("assets/textures/ui/StartІcreen.jpg"));
     texManager.addTexture("mainmenu_button", Render::dsa_load_texture_iwh("assets/textures/ui/StartButton.png"));
     texManager.addTexture("mainmenu_button_hover", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonINMOn.png"));
+    texManager.addTexture("warning_background", Render::dsa_load_texture_iwh("assets/textures/ui/NBL.jpg"));
+
+    texManager.addTexture("indoor_button", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonINM_.png"));
+    texManager.addTexture("indoor_button_hover", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonINM_hover.png"));
+    texManager.addTexture("outdoor_button", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonOtdM_.png"));
+    texManager.addTexture("outdoor_button_hover", Render::dsa_load_texture_iwh("assets/textures/ui/StartButtonOtdMOn.png"));
 
     auto main_menu = std::make_shared<MainMenuScreen>();
+    auto warning_menu = std::make_shared<WarningScreen>();
     main_menu->setScreenManager(&Engine::GetGuiHandler().getScreenManager());
+    warning_menu->setScreenManager(&Engine::GetGuiHandler().getScreenManager());
 
     Engine::GetGuiHandler().getScreenManager().registerScreen("main", main_menu);
+    Engine::GetGuiHandler().getScreenManager().registerScreen("warning", warning_menu);
     Engine::GetGuiHandler().getScreenManager().pushScreen("main");
 
     // GUI setup ==================================
