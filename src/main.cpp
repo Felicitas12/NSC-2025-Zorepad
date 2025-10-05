@@ -130,25 +130,29 @@ int main() {
         );
         earth->set_position(earthPosition);
 
+        
+		bool some_logic = false; // Replace with actual condition to toggle between ISS and Cupola view
 		// ISS orbit around the Earth --------------------------------------------------- Uncomment/Comments to see ISS
-        //issOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
-        //glm::vec3 issLocalPosition = glm::vec3(
-        //    ISS_ALTITUDE_FROM_EARTH * glm::cos(issOrbitAngle),
-        //    ISS_ALTITUDE_FROM_EARTH * glm::sin(issOrbitAngle), // Assuming the orbit is in the XZ plane
-        //    0.0f
-        //);
-        //glm::vec3 issWorldPosition = earth->get_pos() + issLocalPosition;
-        //iss->set_position(issWorldPosition);
-
-        // Cupola orbit around the Earth --------------------------------------------------- Uncomment/Comments to see Cupola
-        cupolaOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
-        glm::vec3 cupolaLocalPosition = glm::vec3(
-            ISS_ALTITUDE_FROM_EARTH * glm::cos(cupolaOrbitAngle),
-            ISS_ALTITUDE_FROM_EARTH * glm::sin(cupolaOrbitAngle), // Assuming the orbit is in the XZ plane
-            0.0f
-        );
-        glm::vec3 cupolaWorldPosition = earth->get_pos() + cupolaLocalPosition;
-        cupola->set_position(cupolaWorldPosition);
+        if (some_logic) {
+            //issOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
+            glm::vec3 issLocalPosition = glm::vec3(
+                ISS_ALTITUDE_FROM_EARTH * glm::cos(issOrbitAngle),
+                ISS_ALTITUDE_FROM_EARTH * glm::sin(issOrbitAngle), // Assuming the orbit is in the XZ plane
+                0.0f
+            );
+            glm::vec3 issWorldPosition = earth->get_pos() + issLocalPosition;
+            iss->set_position(issWorldPosition);
+        } else {
+            // Cupola orbit around the Earth --------------------------------------------------- Uncomment/Comments to see Cupola
+            cupolaOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
+            glm::vec3 cupolaLocalPosition = glm::vec3(
+                ISS_ALTITUDE_FROM_EARTH * glm::cos(cupolaOrbitAngle),
+                ISS_ALTITUDE_FROM_EARTH * glm::sin(cupolaOrbitAngle), // Assuming the orbit is in the XZ plane
+                0.0f
+            );
+            glm::vec3 cupolaWorldPosition = earth->get_pos() + cupolaLocalPosition;
+            cupola->set_position(cupolaWorldPosition);
+        }
 
 		// Calculation of camera position in cupola around the Earth 
         cameraOrbitAngle -= (deltaTime / ISS_ORBIT_PERIOD) * glm::two_pi<float>();
